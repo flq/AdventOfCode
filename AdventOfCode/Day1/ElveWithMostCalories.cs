@@ -27,7 +27,6 @@ public abstract class ElveWithMostCalories : AdventDay
             }
         }
 
-        var (name, calories) = Iterate().MaxBy(elve => elve.Calories);
-        return $"Elve {name} has most calories with {calories}";
+        return string.Join(", ", Iterate().OrderByDescending(elve => elve.Calories).Take(3).Select(e => e.Calories).Sum());
     }
 }

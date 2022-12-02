@@ -1,7 +1,7 @@
 ﻿using AdventOfCode;
 using AdventOfCode.Day1;
 
-static void Run<T>() where T : AdventDay
+static void Run<T>() where T : IAdventDay
 {
     Console.WriteLine("Day1:");
     var output = T.Run(new Context(T.Day));

@@ -1,6 +1,6 @@
 namespace AdventOfCode.Day2;
 
-public class RockPaperScissors : IAdventDay
+public abstract class RockPaperScissors : IAdventDay
 {
     public static string Day => "Day2";
 
@@ -16,7 +16,7 @@ public class RockPaperScissors : IAdventDay
                 _ => (Result.Draw, PointsFromMove(myMove))
             };
 
-        var points = ctx.GetIterator("input.txt")
+        var points = ctx.GetInputIterator()
             .Select(line => line.Split(" "))
             .Select(result => Winner(Translate(result[0]), Translate(result[1])))
             .Select(roundResult => roundResult switch

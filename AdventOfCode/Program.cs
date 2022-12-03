@@ -1,6 +1,4 @@
 ﻿using AdventOfCode;
-using AdventOfCode.Day1;
-using AdventOfCode.Day2;
 
 static void Run<T>() where T : IAdventDay
 {
@@ -11,4 +9,6 @@ static void Run<T>() where T : IAdventDay
 
 Console.WriteLine("Advent of Code!");
 
-Run<RockPaperScissors>();
+// Run<AdventOfCode.Day1.ElveWithMostCalories>();
+// Run<AdventOfCode.Day2.RockPaperScissors>();
+Run<AdventOfCode.Day3.SackPacking>();

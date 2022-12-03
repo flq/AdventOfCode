@@ -10,7 +10,7 @@ public abstract class ElveWithMostCalories : IAdventDay
         {
             var currentElve = 1;
             var currentCalories = 0;
-            foreach (var line in ctx.GetIterator("input.txt"))
+            foreach (var line in ctx.GetInputIterator())
             {
                 if (line is "")
                 {

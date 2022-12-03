@@ -15,9 +15,9 @@ public class Context
         _day = day;
     }
 
-    public IEnumerable<string> GetIterator(string filename)
+    public IEnumerable<string> GetInputIterator()
     {
-        var path = Path.Combine("..", "..", "..", _day, filename);
+        var path = Path.Combine("..", "..", "..", _day, "input.txt");
         using var f = File.OpenRead(path);
         using var sr = new StreamReader(f);
         while (sr.ReadLine() is { } line)

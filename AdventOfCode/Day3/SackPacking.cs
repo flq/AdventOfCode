@@ -10,7 +10,7 @@ public abstract class SackPacking : IAdventDay
         .ToString();
 
     // Use ASCII code of char as numeric value and offset according to requirements
-    private static int Priority(char character) => character - (char.IsUpper(character) ? 38 : 96);
+    public static int Priority(char character) => character - (char.IsUpper(character) ? 38 : 96);
 
     private static int GetPriorityOfDoubleItem(string sack)
     {

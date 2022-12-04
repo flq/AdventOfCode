@@ -13,4 +13,5 @@ Console.WriteLine("Advent of Code!");
 // Run<AdventOfCode.Day2.RockPaperScissors>();
 // Run<AdventOfCode.Day3.SackPacking>();
 // Run<AdventOfCode.Day3.BadgeFinding>();
-Run<AdventOfCode.Day4.CleaningRanges>();
+// Run<AdventOfCode.Day4.CleaningRanges>();
+Run<AdventOfCode.Day4.CleaningRangesOverlaps>();

@@ -1,30 +1,42 @@
-using System.Text.RegularExpressions;
-
 namespace AdventOfCode.Day4;
 
 public class CleaningRanges : IAdventDay
 {
     public static string Day => "Day4";
+
     public static string Run(Context ctx)
     {
-        var count = ctx.GetInputIterator()
-            .Select(line => line.Split(","))
-            .Select(rangeInputs =>
-            {
-                
-                var range1 = rangeInputs[0].Split("-");
-                var range2 = rangeInputs[1].Split("-");
-                return (new CleaningRange(int.Parse(range1[0]), int.Parse(range1[1])),
-                    new CleaningRange(int.Parse(range2[0]), int.Parse(range2[1])));
-            })
-            .Count(ranges => ranges.Item1.IsContainedIn(ranges.Item2) || ranges.Item2.IsContainedIn(ranges.Item1));
-        
+        var count = GetRanges(ctx)
+            .Count(ranges => ranges[1].IsAnyContainedInTheOther(ranges[0]));
+
         return count.ToString();
     }
 
-    record CleaningRange(int LowerBound, int UpperBound)
+    /// <summary>
+    ///     Gives the ranges contained in a single line. The ranges are already sorted
+    /// </summary>
+    public static IEnumerable<List<CleaningRange>> GetRanges(Context ctx)
     {
-        public bool IsContainedIn(CleaningRange range) 
-            => LowerBound <= range.LowerBound && UpperBound >= range.UpperBound;
+        return ctx.GetInputIterator()
+            .Select(line => line.GetPair(','))
+            .Select(pair =>
+            {
+                var (lower1, upper1) = pair.left.GetNumberPair('-');
+                var (lower2, upper2) = pair.right.GetNumberPair('-');
+                return lower1 <= lower2
+                        ? new List<CleaningRange> {new(lower1, upper1), new(lower2, upper2)}
+                        : new List<CleaningRange> {new(lower2, upper2), new(lower1, upper1)}
+                    ;
+            });
+    }
+
+    public record CleaningRange(int LowerBound, int UpperBound)
+    {
+        public bool IsAnyContainedInTheOther(CleaningRange range)
+            => (LowerBound <= range.LowerBound && UpperBound >= range.UpperBound) ||
+               (range.LowerBound <= LowerBound && range.UpperBound >= UpperBound);
+
+        public bool OverlapsWith(CleaningRange range)
+            => LowerBound <= range.LowerBound && UpperBound >= range.LowerBound;
     }
 }

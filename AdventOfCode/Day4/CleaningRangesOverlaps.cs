@@ -1,6 +1,6 @@
 namespace AdventOfCode.Day4;
 
-public class CleaningRangesOverlaps : IAdventDay
+public abstract class CleaningRangesOverlaps : IAdventDay
 {
     public static string Day => "Day4";
 

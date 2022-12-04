@@ -1,6 +1,6 @@
 namespace AdventOfCode.Day4;
 
-public class CleaningRanges : IAdventDay
+public abstract class CleaningRanges : IAdventDay
 {
     public static string Day => "Day4";
 
@@ -29,6 +29,8 @@ public class CleaningRanges : IAdventDay
                     ;
             });
     }
+
+    public record Line(int Lower1, int Upper1, int Lower2, int Upper2);
 
     public record CleaningRange(int LowerBound, int UpperBound)
     {

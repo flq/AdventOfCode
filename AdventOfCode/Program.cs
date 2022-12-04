@@ -12,4 +12,5 @@ Console.WriteLine("Advent of Code!");
 // Run<AdventOfCode.Day1.ElveWithMostCalories>();
 // Run<AdventOfCode.Day2.RockPaperScissors>();
 // Run<AdventOfCode.Day3.SackPacking>();
-Run<AdventOfCode.Day3.BadgeFinding>();
+// Run<AdventOfCode.Day3.BadgeFinding>();
+Run<AdventOfCode.Day4.CleaningRanges>();

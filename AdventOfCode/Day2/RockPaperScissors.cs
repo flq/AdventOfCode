@@ -30,7 +30,7 @@ public abstract class RockPaperScissors : IAdventDay
                     PointsCalculator(Winner(opponentMove, ProperMoveForDesiredOutcome(opponentMove, pieces[1])))
                 select result)
             .Sum();
-        
+
         return $"{pointsStep1.ToString()},{pointsStep2.ToString()}";
     }
 

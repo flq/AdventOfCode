@@ -27,7 +27,7 @@ public partial class CraneStacking : IAdventDay
             .ToList();
 
         foreach (var craneCommand in craneCommands)
-            craneCommand.Apply(Columns);
+            craneCommand.Apply(Columns, true);
 
         return string.Join("", Columns.Select(s => s.Peek()));
     }
@@ -51,13 +51,32 @@ public partial class CraneStacking : IAdventDay
 
 internal record CraneCommand(int From, int To, int HowMany)
 {
-    public void Apply(Stack<string>[] columns)
+    public void Apply(Stack<string>[] columns, bool newStyle = false)
     {
         var howMany = HowMany;
-        while (howMany > 0)
+        
+        if (newStyle)
         {
-            columns[To - 1].Push(columns[From - 1].Pop());
-            howMany--;
+            var tmp = new Stack<string>();
+            while (howMany > 0)
+            {
+                tmp.Push(columns[From - 1].Pop());
+                howMany--;
+            }
+
+            while (tmp.Count > 0)
+            {
+                columns[To - 1].Push(tmp.Pop());
+            }
+        }
+        else
+        {
+
+            while (howMany > 0)
+            {
+                columns[To - 1].Push(columns[From - 1].Pop());
+                howMany--;
+            }
         }
     }
 }

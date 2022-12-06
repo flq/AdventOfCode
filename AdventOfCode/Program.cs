@@ -15,4 +15,5 @@ Console.WriteLine("Advent of Code!");
 // Run<AdventOfCode.Day3.BadgeFinding>();
 // Run<AdventOfCode.Day4.CleaningRanges>();
 // Run<AdventOfCode.Day4.CleaningRangesOverlaps>();
-Run<AdventOfCode.Day5.CraneStacking>();
+// Run<AdventOfCode.Day5.CraneStacking>();
+Run<AdventOfCode.Day6.FindTerminator>();

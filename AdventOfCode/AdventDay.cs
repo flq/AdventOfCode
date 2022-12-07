@@ -15,18 +15,18 @@ public class Context
         _day = day;
     }
 
-    private string Path => System.IO.Path.Combine("..", "..", "..", _day, "input.txt");
+    private string Path(string fileName) => System.IO.Path.Combine("..", "..", "..", _day, fileName);
 
-    public IEnumerable<string> GetInputIterator()
+    public IEnumerable<string> GetInputIterator(string fileName = "input.txt")
     {
-        using var f = File.OpenRead(Path);
+        using var f = File.OpenRead(Path(fileName));
         using var sr = new StreamReader(f);
         while (sr.ReadLine() is { } line) yield return line;
     }
 
-    public ReadOnlyMemory<byte> GetInputAsMemory()
+    public ReadOnlyMemory<byte> GetInputAsMemory(string fileName = "input.txt")
     {
-        var file = File.ReadAllBytes(Path);
+        var file = File.ReadAllBytes(Path(fileName));
         return new ReadOnlyMemory<byte>(file);
     }
 }

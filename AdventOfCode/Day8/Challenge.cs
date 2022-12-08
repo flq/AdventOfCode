@@ -65,6 +65,7 @@ public static class Helper
     {
         // Assuming it's a square
         var length = trees.Length;
+
         switch (direction)
         {
             case Direction.LeftOrDown:
@@ -76,8 +77,8 @@ public static class Helper
                 }
                 break;
             case Direction.RightOrUp:
-                for (var a = trees.Length - 1; a >= 0; a--)
-                for (var b = trees.Length - 1; b >= 0; b--)
+                for (var a = length - 1; a >= 0; a--)
+                for (var b = length - 1; b >= 0; b--)
                 {
                     var (c, d) = orientation == Orientation.Row ? (a, b) : (b, a);
                     yield return new(b == 0, trees[c][d], c, d);

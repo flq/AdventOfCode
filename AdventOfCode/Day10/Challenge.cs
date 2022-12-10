@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace AdventOfCode.Day10;
 
 public class Challenge : IAdventDay
@@ -6,20 +8,20 @@ public class Challenge : IAdventDay
     public static string Day => "Day10";
     public static string Run(Context ctx)
     {
-        var measurementCycles = new HashSet<int>(new[] {20, 60, 100, 140, 180, 220});
-        
         var register = 1;
-        var storedValues = new List<(int Cycle, int Value)>();
-
+        
         var input = ctx.GetInputIterator().GetEnumerator();
         var instructionStack = new Stack<Instruction>();
-        for (var cycle = 1; cycle <= 220; cycle++)
+        var currentCRTLine = new StringBuilder(40);
+        for (var cycle = 1; cycle <= 240; cycle++)
         {
-            if (measurementCycles.Contains(cycle))
+            currentCRTLine.Append(Math.Abs(currentCRTLine.Length - register) <= 1 ? '#' : '.');
+            if (currentCRTLine.Length == 40)
             {
-                storedValues.Add((cycle, register));
+                Console.WriteLine(currentCRTLine);
+                currentCRTLine.Clear();
             }
-
+            
             if (instructionStack.Count == 0 && input.MoveNext())
             {
                 switch (input.Current.Split(" "))
@@ -35,8 +37,8 @@ public class Challenge : IAdventDay
             }
             register = instructionStack.Pop().Operation(register);
         }
-        var sum = storedValues.Select(((tuple) => tuple.Cycle * tuple.Value)).Sum();
-        return sum.ToString();
+        
+        return "";
     }
 
     private record struct Instruction(Func<int, int> Operation);

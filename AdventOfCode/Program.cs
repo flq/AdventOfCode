@@ -20,4 +20,6 @@ Console.WriteLine("Advent of Code!");
 // Run<AdventOfCode.Day7.Challenge>();
 // Run<AdventOfCode.Day8.Challenge>();
 // Run<AdventOfCode.Day9.Challenge>();
-Run<AdventOfCode.Day10.Challenge>();
+// Run<AdventOfCode.Day10.Challenge>();
+// Run<AdventOfCode.Day11.Challenge>();
+Run<AdventOfCode.Day12.Challenge>();

@@ -15,34 +15,47 @@ public abstract class Challenge : IAdventDay
         
         var (graph, start, end) = BuildWalkGraph(positions);
         var result = graph.Dijkstra(start, end);
-        var join = string.Join("->", result.GetPath().Select(id => graph[id].Item));
-        Console.WriteLine(join);
+        // var join = string.Join("->", result.GetPath().Select(id => graph[id].Item));
+        // Console.WriteLine(join);
         
-        return $"Shortest Path has {result.GetPath().Count() - 1} steps";
+        return $"Shortest Path has {result.Distance} steps";
     }
 
     private static (Graph<Position, string>, uint startId, uint endId) BuildWalkGraph(Position[][] positions)
     {
-        bool IsReachableFrom(Position from, Position to) => to.Height - from.Height is 0 or 1;
-
-        IEnumerable<Position> ViableNextSteps(Position position)
+        IEnumerable<Position> YieldViablePositions(Position position, IReadOnlySet<Position> avoid)
         {
-            if (position.X > 0 && IsReachableFrom(position, positions[position.Y][position.X - 1]))
+            if (position.X > 0 && !avoid.Contains(positions[position.Y][position.X - 1])) 
                 yield return positions[position.Y][position.X - 1];
-            if (position.X < positions[position.Y].Length - 1 &&
-                IsReachableFrom(position, positions[position.Y][position.X + 1]))
+            if (position.X < positions[position.Y].Length - 1 && !avoid.Contains(positions[position.Y][position.X + 1])) 
                 yield return positions[position.Y][position.X + 1];
-
-            if (position.Y > 0 && IsReachableFrom(position, positions[position.Y - 1][position.X]))
+            if (position.Y > 0 && !avoid.Contains(positions[position.Y - 1][position.X])) 
                 yield return positions[position.Y - 1][position.X];
-            if (position.Y < positions.Length - 1 && IsReachableFrom(position, positions[position.Y + 1][position.X]))
+            if (position.Y < positions.Length - 1 && !avoid.Contains(positions[position.Y + 1][position.X])) 
                 yield return positions[position.Y + 1][position.X];
+        }
+
+        IEnumerable< (Position position, int distance)> AllPathsToNextHeight(Position position, HashSet<Position> avoid, int distance = 1)
+        {
+            foreach (var next in YieldViablePositions(position, avoid))
+            {
+                if (next.Height == position.Height)
+                {
+                    avoid.Add(position);
+                    foreach (var destination in AllPathsToNextHeight(next, avoid, distance + 1))
+                    {
+                        yield return destination;
+                    }
+                }
+                if (next.Height - position.Height == 1 || (next.Height == position.Height && next.IsEnd))
+                {
+                    avoid.Remove(position);
+                    yield return (next, distance);
+                }
+            }
         }
         
         var graph = new Graph<Position, string>();
-        uint startId = 0;
-        uint endId = 0;
-        
         var visited = new Dictionary<Position, uint>();
         
         uint TryAdd(Position position)
@@ -53,27 +66,53 @@ public abstract class Challenge : IAdventDay
             visited.Add(position, id);
             return id;
         }
+        
+        var start = positions.SelectMany(x => x).Single(x => x.IsStart);
+        var end = positions.SelectMany(x => x).Single(x => x.IsEnd);
+        uint startId = TryAdd(start);
+        uint endId = TryAdd(end);
+        
 
-        foreach (var position in positions.SelectMany(x => x))
+        var currentHeight = new Stack<Position>(); 
+        currentHeight.Push(start);
+        var bestPathChooser = new Dictionary<(Position, Position), int>();
+        var visitedHeights = new HashSet<char>();
+
+        while (currentHeight.Count > 0 && currentHeight.Peek().Height <= 'z')
         {
-            var id = TryAdd(position);
-            if (position.IsStart)
-                startId = id;
-            if (position.IsEnd)
-                endId = id;
-            foreach (var nextStep in ViableNextSteps(position))
+            var pos = currentHeight.Pop();
+            if (!visitedHeights.Contains(pos.Height))
             {
-                var nextId = TryAdd(nextStep);
-                graph.Connect(id, nextId, 1, string.Empty);
+                visitedHeights.Add(pos.Height);
+                Console.WriteLine($"First time on height {pos.Height}");
+            }
+            
+            foreach (var (nextPosition, distance) in AllPathsToNextHeight(pos, new HashSet<Position>()))
+            {
+                var key = (pos, nextPosition);
+                if (bestPathChooser.ContainsKey(key) && bestPathChooser[key] < distance)
+                    continue;
+                currentHeight.Push(nextPosition);
+                    bestPathChooser[key] = distance;
             }
         }
-
+        foreach (var ((from, to), distance) in bestPathChooser)
+        {
+            var fromId = TryAdd(from);
+            var toId = TryAdd(to);
+            graph.Connect(fromId, toId, distance, "");
+        }
+        
         return (graph, startId, endId);
     }
 
     internal readonly struct Position : IEquatable<Position>
     {
-        private static readonly Position Zero = new Position('0', -1, -1);
+        public static bool operator ==(Position left, Position right) => left.Equals(right);
+
+        public static bool operator !=(Position left, Position right) => !left.Equals(right);
+
+        public static readonly Position None = new Position('0', -1, -1);
         
         private readonly char height;
         public readonly int X;

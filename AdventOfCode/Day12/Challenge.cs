@@ -1,162 +1,102 @@
+using Dijkstra.NET.Graph;
+using Dijkstra.NET.ShortestPath;
+
 namespace AdventOfCode.Day12;
 
-public class Challenge : IAdventDay
+public abstract class Challenge : IAdventDay
 {
-    private static Position Start;
-    private static Position End;
-    
     public static string Day => "Day12";
 
     public static string Run(Context ctx)
     {
-        var positions = ctx.GetInputIterator("sample.txt")
-            .Select(CreateMapFragment)
+        var positions = ctx.GetInputIterator()
+            .Select((line, yIndex) => line.Select((c, xIndex) => new Position(c, xIndex, yIndex)).ToArray())
             .ToArray();
-
-        BuildWalkGraph(Start, positions);
-
-        var paths = FindPaths(Start, End).ToList();
-
-        Console.WriteLine($"Number of paths found: {paths.Count}");
-        return $"Shortest Path has {paths.Min(p => p.Steps)} steps";
+        
+        var (graph, start, end) = BuildWalkGraph(positions);
+        var result = graph.Dijkstra(start, end);
+        var join = string.Join("->", result.GetPath().Select(id => graph[id].Item));
+        Console.WriteLine(join);
+        
+        return $"Shortest Path has {result.GetPath().Count() - 1} steps";
     }
 
-    // find shortest path in a graph
-    private static IEnumerable<Walk> FindPaths(Position start, Position end, Walk? currentPath = null)
+    private static (Graph<Position, string>, uint startId, uint endId) BuildWalkGraph(Position[][] positions)
     {
-        currentPath ??= new Walk(start);
+        bool IsReachableFrom(Position from, Position to) => to.Height - from.Height is 0 or 1;
 
-        foreach (var next in start.NextSteps)
-            if (next.Equals(end))
-            {
-                currentPath.Add(end);
-                yield return currentPath;
-            }
-            else
-            {
-                var newPath = currentPath.Clone();
-                if (newPath.Add(next))
-                {
-                    foreach (var path in FindPaths(next, end, newPath))
-                    {
-                        yield return path;
-                    }
-                }
-            }
-    }
-
-    private static void BuildWalkGraph(Position start, Position[][] positions)
-    {
         IEnumerable<Position> ViableNextSteps(Position position)
         {
-            if (position.X > 0 && positions[position.Y][position.X - 1].IsReachableFrom(position))
+            if (position.X > 0 && IsReachableFrom(position, positions[position.Y][position.X - 1]))
                 yield return positions[position.Y][position.X - 1];
             if (position.X < positions[position.Y].Length - 1 &&
-                positions[position.Y][position.X + 1].IsReachableFrom(position))
+                IsReachableFrom(position, positions[position.Y][position.X + 1]))
                 yield return positions[position.Y][position.X + 1];
 
-            if (position.Y > 0 && positions[position.Y - 1][position.X].IsReachableFrom(position))
+            if (position.Y > 0 && IsReachableFrom(position, positions[position.Y - 1][position.X]))
                 yield return positions[position.Y - 1][position.X];
-            if (position.Y < positions.Length - 1 && positions[position.Y + 1][position.X].IsReachableFrom(position))
+            if (position.Y < positions.Length - 1 && IsReachableFrom(position, positions[position.Y + 1][position.X]))
                 yield return positions[position.Y + 1][position.X];
+        }
+        
+        var graph = new Graph<Position, string>();
+        uint startId = 0;
+        uint endId = 0;
+        
+        var visited = new Dictionary<Position, uint>();
+        
+        uint TryAdd(Position position)
+        {
+            if (visited.TryGetValue(position, out var id))
+                return id;
+            id = graph.AddNode(position);
+            visited.Add(position, id);
+            return id;
         }
 
         foreach (var position in positions.SelectMany(x => x))
         {
-            position.NextSteps = ViableNextSteps(position).ToArray();
+            var id = TryAdd(position);
+            if (position.IsStart)
+                startId = id;
+            if (position.IsEnd)
+                endId = id;
+            foreach (var nextStep in ViableNextSteps(position))
+            {
+                var nextId = TryAdd(nextStep);
+                graph.Connect(id, nextId, 1, string.Empty);
+            }
         }
+
+        return (graph, startId, endId);
     }
 
-    private static Position[] CreateMapFragment(string line, int yIndex)
-        => line.Select((c, xIndex) => new Position(c, xIndex, yIndex)).ToArray();
-
-    internal class Position : IEquatable<Position>
+    internal readonly struct Position : IEquatable<Position>
     {
+        private static readonly Position Zero = new Position('0', -1, -1);
+        
         private readonly char height;
         public readonly int X;
         public readonly int Y;
-        private HashSet<Position> blackList = new();
 
         public Position(char height, int x, int y)
         {
             this.height = height;
             X = x;
             Y = y;
-
-            if (IsStart) Start = this;
-            if (IsEnd) End = this;
         }
 
         public bool IsStart => height == 'S';
         public bool IsEnd => height == 'E';
+        public char Height => IsStart ? 'a' : IsEnd ? 'z' : height;
+        
+        public bool Equals(Position other) => X == other.X && Y == other.Y;
 
-        public Position[] NextSteps { get; set; }
+        public override bool Equals(object? obj) => obj is Position other && Equals(other);
 
-        private char actualHeight => IsStart ? 'a' : IsEnd ? 'z' : height;
+        public override int GetHashCode() => HashCode.Combine(X, Y);
 
-        public bool Equals(Position other)
-        {
-            return X == other.X && Y == other.Y;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is Position other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(X, Y);
-        }
-
-        public bool IsReachableFrom(Position position)
-        {
-            if (blackList.Contains(position))
-            {
-                return false;
-            }
-            var reachableFrom = position.actualHeight == actualHeight || position.actualHeight == actualHeight - 1;
-            if (reachableFrom)
-            {
-                // Make sure we never walk back
-                blackList.Add(position);
-            }
-            return reachableFrom;
-        }
-
-        public override string ToString() => $"{X},{Y}:{actualHeight}";
+        public override string ToString() => $"{X},{Y}:{Height}";
     };
-
-    internal class Walk
-    {
-        private readonly List<Position> positions = new();
-
-        public Walk(Position start)
-        {
-            positions.Add(start);
-        }
-
-        private Walk(IEnumerable<Position> walkSoFar)
-        {
-            positions = new List<Position>(walkSoFar);
-        }
-
-        public int Steps => positions.Count -1; // 1 step less than positions
-
-        public bool Add(Position position)
-        {
-            if (positions.Contains(position))
-            {
-                // running in cycles
-                return false;
-            }
-            positions.Add(position);
-            return true;
-        }
-
-        public Walk Clone() => new(positions);
-
-        public override string ToString() => "Steps: " + Steps + " " + string.Join(" -> ", positions);
-    }
 }
 

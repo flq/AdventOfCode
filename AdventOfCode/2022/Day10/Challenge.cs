@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace AdventOfCode.Day10;
+namespace AdventOfCode._2022.Day10;
 
 public class Challenge : IAdventDay
 {

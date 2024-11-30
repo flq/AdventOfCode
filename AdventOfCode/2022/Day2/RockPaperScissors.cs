@@ -1,5 +1,5 @@
 #pragma warning disable CS8524
-namespace AdventOfCode.Day2;
+namespace AdventOfCode._2022.Day2;
 
 public abstract class RockPaperScissors : IAdventDay
 {

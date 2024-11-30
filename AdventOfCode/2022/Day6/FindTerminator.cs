@@ -1,4 +1,4 @@
-namespace AdventOfCode.Day6;
+namespace AdventOfCode._2022.Day6;
 
 public abstract class FindTerminator : IAdventDay
 {

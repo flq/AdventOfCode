@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AdventOfCode.Day11;
+namespace AdventOfCode._2022.Day11;
 
 public class Challenge : IAdventDay
 {

@@ -1,7 +1,7 @@
 using Dijkstra.NET.Graph;
 using Dijkstra.NET.ShortestPath;
 
-namespace AdventOfCode.Day12;
+namespace AdventOfCode._2022.Day12;
 
 public abstract class Challenge : IAdventDay
 {

@@ -1,6 +1,6 @@
 using static System.Math;
 
-namespace AdventOfCode.Day9;
+namespace AdventOfCode._2022.Day9;
 
 public class Challenge : IAdventDay
 {

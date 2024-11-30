@@ -1,4 +1,4 @@
-namespace AdventOfCode.Day4;
+namespace AdventOfCode._2022.Day4;
 
 public abstract class CleaningRangesOverlaps : IAdventDay
 {

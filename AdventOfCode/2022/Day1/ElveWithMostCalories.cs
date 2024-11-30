@@ -1,4 +1,4 @@
-namespace AdventOfCode.Day1;
+namespace AdventOfCode._2022.Day1;
 
 public abstract class ElveWithMostCalories : IAdventDay
 {

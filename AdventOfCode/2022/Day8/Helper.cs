@@ -1,4 +1,4 @@
-namespace AdventOfCode.Day8;
+namespace AdventOfCode._2022.Day8;
 
 public enum Direction
 {

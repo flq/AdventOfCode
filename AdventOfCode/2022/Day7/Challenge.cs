@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace AdventOfCode.Day7;
+namespace AdventOfCode._2022.Day7;
 
 public class Challenge : IAdventDay
 {

@@ -1,6 +1,6 @@
 namespace AdventOfCode;
 
-public static partial class TupleSplitter
+public static class TupleSplitter
 {
     public static (string left, string right) GetPair(this string input, char separator) =>
         input.Split(separator) switch

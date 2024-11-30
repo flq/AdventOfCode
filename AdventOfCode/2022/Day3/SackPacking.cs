@@ -1,4 +1,4 @@
-namespace AdventOfCode.Day3;
+namespace AdventOfCode._2022.Day3;
 
 public abstract class SackPacking : IAdventDay
 {

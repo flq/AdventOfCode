@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AdventOfCode.Day5;
+namespace AdventOfCode._2022.Day5;
 
 public partial class CraneStacking : IAdventDay
 {

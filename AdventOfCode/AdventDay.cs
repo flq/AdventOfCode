@@ -10,8 +10,6 @@ public class Context(string day)
 {
     private const string Year = "2024";
 
-    private string Path(string fileName) => System.IO.Path.Combine("..", "..", "..", Year, day, fileName);
-
     public IEnumerable<string> GetInputIterator(string fileName = "input.txt")
     {
         using var f = File.OpenRead(Path(fileName));
@@ -19,9 +17,9 @@ public class Context(string day)
         while (sr.ReadLine() is { } line) yield return line;
     }
 
-    public ReadOnlyMemory<byte> GetInputAsMemory(string fileName = "input.txt")
-    {
-        var file = File.ReadAllBytes(Path(fileName));
-        return new ReadOnlyMemory<byte>(file);
-    }
+    public ReadOnlyMemory<byte> GetInputAsMemory(string fileName = "input.txt") => 
+        new(File.ReadAllBytes(Path(fileName)));
+
+    private string Path(string fileName) => 
+        System.IO.Path.Combine("..", "..", "..", Year, day, fileName);
 }

@@ -1,2 +1,4 @@
 # AdventOfCode
-This is the advent of code challenge at https://adventofcode.com solved in C# for the year 2022. Might not do everything but let's see.
+
+This is my repo for solving advent of code challenges at https://adventofcode.com solved in C#.
+I did a bunch in 2022 and skipped 23 entirely. Let's see what 2024 brings to us.

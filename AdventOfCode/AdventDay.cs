@@ -6,16 +6,11 @@ public interface IAdventDay
     static abstract string Run(Context ctx);
 }
 
-public class Context
+public class Context(string day)
 {
-    private readonly string _day;
+    private const string Year = "2024";
 
-    public Context(string day)
-    {
-        _day = day;
-    }
-
-    private string Path(string fileName) => System.IO.Path.Combine("..", "..", "..", _day, fileName);
+    private string Path(string fileName) => System.IO.Path.Combine("..", "..", "..", Year, day, fileName);
 
     public IEnumerable<string> GetInputIterator(string fileName = "input.txt")
     {

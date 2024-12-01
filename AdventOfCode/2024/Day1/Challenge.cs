@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace AdventOfCode._2024.Day1;
 
 public class Challenge : IAdventDay
@@ -24,13 +22,9 @@ public class Challenge : IAdventDay
           var result = left.Zip(right, (l, r) => Abs(l - r)).Sum();
         */
 
-        BigInteger b = 0;
-        foreach (var l in left)
-        {
-            var appearances = right.Count(r => l == r);
-            b += l * appearances;
-        }
-        
-        return b.ToString();
+        var result = left
+            .Aggregate(0, (current, l) => current + l * right.Count(r => l == r));
+
+        return result.ToString();
     }
 }

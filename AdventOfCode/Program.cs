@@ -2,7 +2,7 @@
 
 Console.WriteLine("Advent of Code!");
 
-Run<AdventOfCode._2024.Day2.ChallengeChatGpt>();
+Run<AdventOfCode._2024.Day3.Challenge>();
 
 return;
 

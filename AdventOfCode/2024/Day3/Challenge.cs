@@ -12,7 +12,7 @@ public partial class Challenge : IAdventDay
 
     public static string Run(Context ctx)
     {
-        var input = ctx.GetInputAsSingleString();
+        var input = ctx.GetInputAsMemoryChar();
 
         var isCalculating = true;
         var result = 0;

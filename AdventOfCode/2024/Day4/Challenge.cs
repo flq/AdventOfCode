@@ -2,11 +2,9 @@ namespace AdventOfCode._2024.Day4;
 
 public class Challenge : IAdventDay
 {
-    public static string Day => "Day4";
-
     public static string Run(Context ctx)
     {
-        var m = ctx.GetInputAsSingleString();
+        var m = ctx.GetInputAsMemoryChar();
         var lineLength = m.Span.IndexOf(Environment.NewLine);
         var checker = new Checker(lineLength, m);
 

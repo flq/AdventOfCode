@@ -8,7 +8,10 @@ return;
 
 static void Run<T>() where T : IAdventDay
 {
-    Console.WriteLine($"{T.Day}:");
-    var output = T.Run(new Context(T.Day));
+    var day = GetDayPart();
+    Console.WriteLine($"{day}:");
+    var output = T.Run(new Context(day));
     Console.WriteLine(output);
+    return;
+    string GetDayPart() => typeof(T).Namespace!.Split(".")[2];
 }

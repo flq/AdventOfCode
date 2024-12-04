@@ -2,7 +2,6 @@ namespace AdventOfCode;
 
 public interface IAdventDay
 {
-    static abstract string Day { get; }
     static abstract string Run(Context ctx);
 }
 
@@ -20,7 +19,7 @@ public class Context(string day)
     public ReadOnlyMemory<byte> GetInputAsMemory(string fileName = "input.txt") => 
         new(File.ReadAllBytes(Path(fileName)));
     
-    public ReadOnlyMemory<char> GetInputAsSingleString(string fileName = "input.txt") => 
+    public ReadOnlyMemory<char> GetInputAsMemoryChar(string fileName = "input.txt") => 
         File.ReadAllText(Path(fileName)).AsMemory();
 
     private string Path(string fileName) => 

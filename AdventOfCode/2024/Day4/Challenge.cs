@@ -32,15 +32,17 @@ public class Checker(int lineLength, ReadOnlyMemory<char> grid)
     {
         var λPlusOne = λ + 1;
         var λMinusOne = λ - 1;
+        // @formatter:off
         return
-            Check(x, x + 1, x + 2, x + 3) + // Horizontal ->
-            Check(x, x - 1, x - 2, x - 3) + // Horizontal <-
-            Check(x, x - λ, x - 2 * λ, x - 3 * λ) + // Vertical up
-            Check(x, x + λ, x + 2 * λ, x + 3 * λ) + // Vertical down
-            Check(x, x - λPlusOne, x - 2 * λPlusOne, x - 3 * λPlusOne) + // Diag up left  
+            Check(x, x + 1,         x + 2,             x + 3) +             // Horizontal ->
+            Check(x, x - 1,         x - 2,             x - 3) +             // Horizontal <-
+            Check(x, x - λ,         x - 2 * λ,         x - 3 * λ) +         // Vertical up
+            Check(x, x + λ,         x + 2 * λ,         x + 3 * λ) +         // Vertical down
+            Check(x, x - λPlusOne,  x - 2 * λPlusOne,  x - 3 * λPlusOne) +  // Diag up left  
             Check(x, x - λMinusOne, x - 2 * λMinusOne, x - 3 * λMinusOne) + // Diag up right  
             Check(x, x + λMinusOne, x + 2 * λMinusOne, x + 3 * λMinusOne) + // Diag down left  
-            Check(x, x + λPlusOne, x + 2 * λPlusOne, x + 3 * λPlusOne); // Diag down right  
+            Check(x, x + λPlusOne,  x + 2 * λPlusOne,  x + 3 * λPlusOne);   // Diag down right  
+        // @formatter:on
     }
 
     private int Check(int x, int m, int a, int s)

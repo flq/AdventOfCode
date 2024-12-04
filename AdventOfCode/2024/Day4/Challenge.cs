@@ -8,14 +8,13 @@ public class Challenge : IAdventDay
     {
         var m = ctx.GetInputAsSingleString();
         var lineLength = m.Span.IndexOf(Environment.NewLine);
-        Console.WriteLine("lineLength: " + lineLength);
         var checker = new Checker(lineLength, m);
 
         var currentIndex = 0;
         var sum = 0;
         while (currentIndex < m.Length)
         {
-            var nextIndex = m.Slice(currentIndex).Span.IndexOf("X");
+            var nextIndex = m[currentIndex..].Span.IndexOf("X");
             if (nextIndex == -1) break;
             sum += checker.NumberOfXMases(currentIndex + nextIndex);
             currentIndex += nextIndex + 1;
@@ -44,16 +43,22 @@ public class Checker(int lineLength, ReadOnlyMemory<char> grid)
             Check(x, x + λPlusOne, x + 2 * λPlusOne, x + 3 * λPlusOne); // Diag down right  
     }
 
-    private int Check(int xx, int mm, int aa, int ss)
+    private int Check(int x, int m, int a, int s)
     {
         var span = grid.Span;
-        if (xx < 0 || xx >= span.Length) return 0;
-        if (mm < 0 || mm >= span.Length) return 0;
-        if (aa < 0 || aa >= span.Length) return 0;
-        if (ss < 0 || ss >= span.Length) return 0;
 
-        var (x, m, a, s) = (span[xx], span[mm], span[aa], span[ss]);
+        foreach (var index in new Span<int>([x, m, a, s]))
+        {
+            // the x cannot be out of bounds
+            if (index < 0 || index >= span.Length) return 0;
+        }
 
-        return x == 'X' && m == 'M' && a == 'A' && s == 'S' ? 1 : 0;
+        char[] candidate = [span[x], span[m], span[a], span[s]];
+
+        return candidate switch
+        {
+            ['X', 'M', 'A', 'S'] => 1,
+            _ => 0
+        };
     }
 }

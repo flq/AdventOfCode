@@ -27,19 +27,21 @@ public class Challenge : IAdventDay
 
 public class Checker(int lineLength, ReadOnlyMemory<char> grid)
 {
-    private readonly int phase = lineLength + 1; // +1 from the new-line
+    private readonly int λ = lineLength + 1; // +1 from the new-line
 
     public int NumberOfXMases(int x)
     {
+        var λPlusOne = λ + 1;
+        var λMinusOne = λ - 1;
         return
             Check(x, x + 1, x + 2, x + 3) + // Horizontal ->
             Check(x, x - 1, x - 2, x - 3) + // Horizontal <-
-            Check(x, x - phase, x - 2 * phase, x - 3 * phase) + // Vertical up
-            Check(x, x + phase, x + 2 * phase, x + 3 * phase) + // Vertical down
-            Check(x, x - (phase + 1), x - 2 * (phase + 1), x - 3 * (phase + 1)) + // Diag up left  
-            Check(x, x - (phase - 1), x - 2 * (phase - 1), x - 3 * (phase - 1)) + // Diag up right  
-            Check(x, x + (phase - 1), x + 2 * (phase - 1), x + 3 * (phase - 1)) + // Diag down left  
-            Check(x, x + phase + 1, x + 2 * (phase + 1), x + 3 * (phase + 1)); // Diag down right  
+            Check(x, x - λ, x - 2 * λ, x - 3 * λ) + // Vertical up
+            Check(x, x + λ, x + 2 * λ, x + 3 * λ) + // Vertical down
+            Check(x, x - λPlusOne, x - 2 * λPlusOne, x - 3 * λPlusOne) + // Diag up left  
+            Check(x, x - λMinusOne, x - 2 * λMinusOne, x - 3 * λMinusOne) + // Diag up right  
+            Check(x, x + λMinusOne, x + 2 * λMinusOne, x + 3 * λMinusOne) + // Diag down left  
+            Check(x, x + λPlusOne, x + 2 * λPlusOne, x + 3 * λPlusOne); // Diag down right  
     }
 
     private int Check(int xx, int mm, int aa, int ss)

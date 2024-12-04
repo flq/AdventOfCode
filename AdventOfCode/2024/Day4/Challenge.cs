@@ -53,7 +53,7 @@ public class Checker(int lineLength, ReadOnlyMemory<char> grid)
             if (index < 0 || index >= span.Length) return 0;
         }
 
-        char[] candidate = [span[x], span[m], span[a], span[s]];
+        Span<char> candidate = [span[x], span[m], span[a], span[s]];
 
         return candidate switch
         {

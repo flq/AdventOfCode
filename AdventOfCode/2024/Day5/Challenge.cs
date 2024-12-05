@@ -6,7 +6,8 @@ public class Challenge : IAdventDay
     {
         List<Rule> ruleSet = [];
 
-        var sumOfMiddles = 0;
+        var sumOfMiddlesValid = 0;
+        var sumOfMiddlesFixed = 0;
         foreach (var line in ctx.GetInputIterator())
         {
             if (line == string.Empty) continue;     
@@ -18,37 +19,66 @@ public class Challenge : IAdventDay
             }
             
             // rule application starts
-            var input = new Input(line);
             
-            if (input.Validate(ruleSet))
+            var input = new Input(line);
+            if (input.IsValid(ruleSet))
             {
-                sumOfMiddles += input.Middle;
+                sumOfMiddlesValid += input.Middle;
+            }
+            else
+            {
+                input.CorrectWith(ruleSet);
+                sumOfMiddlesFixed += input.Middle;
             }
         }
         
-        return sumOfMiddles.ToString();
+        return $"valids: {sumOfMiddlesValid}, fixed: {sumOfMiddlesFixed}";
     }
 }
 
 public readonly struct Input(string line)
 {
-    readonly List<int> numbers = line.Split(",").Select(int.Parse).ToList();
+    private readonly List<int> pages = line.Split(",").Select(int.Parse).ToList();
 
-    public int Middle => numbers[numbers.Count / 2];
-    public bool Validate(IEnumerable<Rule> rules)
+    public int Middle => pages[pages.Count / 2];
+    
+    public bool IsValid(IEnumerable<Rule> rules)
     {
-        var ints = numbers;
-        return rules.All(r => r.Satisfied(ints));
+        var localPages = pages;
+        return rules.All(r => r.SatisfiedBy(localPages));
+    }
+    
+    public void CorrectWith(List<Rule> ruleSet)
+    {
+        var localPages = pages;
+        fixNext:
+        var unsatisfied = ruleSet.FirstOrDefault(r => !r.SatisfiedBy(localPages));
+        if (unsatisfied != default)
+        {
+            unsatisfied.FixToSatisfy(localPages);
+            goto fixNext;
+        }
     }
 }
 
 public readonly record struct Rule(int Precedes, int Follows)
 {
-    public bool Satisfied(List<int> numbers)
+    public bool SatisfiedBy(List<int> numbers)
+    {
+        var (precedesIndex, followsIndex) = FindMatches(numbers);
+        if (precedesIndex == -1 || followsIndex == -1) return true; // rule does not apply and hence satisfied 
+        return precedesIndex >= 0 && followsIndex >= 0 && precedesIndex < followsIndex;
+    }
+    public void FixToSatisfy(List<int> pages)
+    {
+        var (precedesIdx, followsIdx) = FindMatches(pages);
+        (pages[precedesIdx], pages[followsIdx]) = (pages[followsIdx], pages[precedesIdx]);
+    }
+    
+    private (int precedes, int follows) FindMatches(List<int> numbers)
     {
         var precedesIndex = numbers.IndexOf(Precedes);
         var followsIndex = numbers.IndexOf(Follows);
-        if (precedesIndex == -1 || followsIndex == -1) return true; // rule does not apply and is satisfied 
-        return precedesIndex >= 0 && followsIndex >= 0 && precedesIndex < followsIndex;
+        return (precedesIndex, followsIndex);
     }
 } 

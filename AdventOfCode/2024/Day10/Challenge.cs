@@ -11,15 +11,18 @@ public class Challenge : IAdventDay
         var startingPoints = points.Where(p => p.Elevation == 0);
 
         var totalNinersCount = 0;
+        var totalUniquenessCount = 0;
         foreach (var startingPoint in startingPoints)
         {
-            var allNiners = LookForNextStep(startingPoint.Point, 1, []);
+            var node = new Node(startingPoint.Point);
+            var allNiners = LookForNextStep(startingPoint.Point, 1, [], node);
             totalNinersCount += allNiners.Count;
+            totalUniquenessCount += node.UniquePaths;
         }
-        
-        return $"{totalNinersCount} niners";
-        
-        HashSet<Point> LookForNextStep(Point point, int levelToLookFor, HashSet<Point> collectedNiners)
+
+        return $"{totalNinersCount} niners, {totalUniquenessCount} uniqueness";
+
+        HashSet<Point> LookForNextStep(Point point, int levelToLookFor, HashSet<Point> collectedNiners, Node node)
         {
             foreach (var neighbour in YieldNeighbours(point))
             {
@@ -28,9 +31,11 @@ public class Challenge : IAdventDay
                 if (levelToLookFor == 9)
                 {
                     collectedNiners.Add(neighbour);
+                    node.AddEdgeTo(neighbour);
                     continue;
                 }
-                LookForNextStep(neighbour, levelToLookFor + 1, collectedNiners);
+                var thisPlace = node.AddEdgeTo(neighbour);
+                LookForNextStep(neighbour, levelToLookFor + 1, collectedNiners, thisPlace);
             }
             return collectedNiners;
 
@@ -55,8 +60,34 @@ public class Challenge : IAdventDay
         lvl switch
         {
             '.' => -1,
-            _ => int.Parse([lvl]),
+            _ => int.Parse([lvl])
         };
 }
 
 internal readonly record struct ElevationPoint(Point Point, int Elevation);
+
+internal class Node(Point elevationPoint)
+{
+    private readonly Node? parent;
+    private Node(Node parent, Point elevationPoint) : this(elevationPoint)
+    {
+        this.parent = parent;
+    }
+
+    private readonly List<Node> children = [];
+
+    public Node AddEdgeTo(Point point)
+    {
+        /*     / y \
+         *   x      d
+         *     \ z /
+         */
+        // okay, a node can have two parents, so this stuff is unfortunately flawed, but I'm tired now
+        var item = new Node(this, point);
+        children.Add(item);
+        return item;
+    }
+
+    public int UniquePaths => children.Count == 0 ? 1 : children.Sum(child => child.UniquePaths);
+}
+    

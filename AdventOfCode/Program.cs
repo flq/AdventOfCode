@@ -2,7 +2,7 @@
 
 Console.WriteLine("Advent of Code!");
 
-Run<AdventOfCode._2024.Day8.Challenge>();
+Run<AdventOfCode._2024.Day10.Challenge>();
 
 return;
 

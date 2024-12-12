@@ -25,11 +25,6 @@ public class Challenge : IAdventDay
                     areasInLine.Add(gardenItem.Plant, new ContiguousArea(gardenItem.Plant));
                 }
             }
-            
-            from item in gardenItems
-                group item by item.Location.X into g
-            gardenItems.GroupBy(i => i.Location.X).The
-            
         }
         
         

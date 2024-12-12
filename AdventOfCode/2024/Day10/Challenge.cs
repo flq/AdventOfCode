@@ -51,11 +51,8 @@ public class Challenge : IAdventDay
 
     private static List<ElevationPoint> InitializeMap(IEnumerable<string> lines) =>
         lines
-            .Select((line, y) => (line, y))
-            .Select(lineAndY => lineAndY.line.Select((lvl, x) => (elevation: Parse(lvl), x, lineAndY.y)))
-            .SelectMany(x => x)
-            .Select(data => new ElevationPoint(new Point(data.x, data.y), data.elevation))
-            .ToList();
+            .GridLike(data => new ElevationPoint(new Point(data.x, data.y), Parse(data.val))).items;
+    
     private static int Parse(char lvl) =>
         lvl switch
         {

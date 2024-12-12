@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace AdventOfCode._2024.Day6;
 
 public class Challenge : IAdventDay
@@ -61,7 +59,7 @@ internal class Guard(Point position)
                 yield break;
             }
             
-            if (p.IsOutside(context.Grid))
+            if (context.Grid.IsOutside(p))
             {
                 Exited = true;
                 yield break;
@@ -101,10 +99,4 @@ internal enum Orientation
     Down,
     Left,
     Right
-}
-
-public static class PointExtensions
-{
-    public static bool IsOutside(this Point p, Size size) =>
-        p.X < 0 || p.X >= size.Width || p.Y < 0 || p.Y >= size.Height;
 }

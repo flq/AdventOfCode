@@ -1,3 +1,5 @@
+using AdventOfCode._2024.Day12;
+
 namespace AdventOfCode;
 
 public static class Tools
@@ -23,10 +25,7 @@ public static class Tools
         foreach (var line in lines)
         {
             width = line.Length;
-            for (var x = 0; x < line.Length; x++)
-            {
-                builder((line[x], x,  y));
-            }
+            result.AddRange(line.Select((t, x) => builder((t, x, y))));
             y++;
         }
         
@@ -51,6 +50,6 @@ public readonly record struct Size(int Width, int Height)
 {
     public bool IsOutside(Point p) =>
         p.X < 0 || p.X >= Width || p.Y < 0 || p.Y >= Height;
-    public bool IsInside(Point p) => !IsOutside(p);
-};
+    
+}
 
